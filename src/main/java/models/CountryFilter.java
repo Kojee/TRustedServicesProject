@@ -10,13 +10,11 @@ public class CountryFilter {
     private List<Country> selectableEntities;
     private List<Country> selectedEntities;
 
-    public CountryFilter(ITrustedServiceApi serviceApi){
+    //TODO: aggiungi eventi modifica selectable e selected
+
+    public CountryFilter(ITrustedServiceApi serviceApi) throws IOException {
         this.serviceApi = serviceApi;
-        try {
-            this.selectableEntities = serviceApi.GetCountries(null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.selectableEntities = serviceApi.GetCountries(null);
         this.selectedEntities = new ArrayList<>();
     }
 
@@ -29,7 +27,7 @@ public class CountryFilter {
     }
 
     public void SelectCountry(String countryName){
-        Optional<Country> c = selectableEntities.stream().filter(x -> x.GetCountryName() == countryName).findFirst();
+        Optional<Country> c = selectableEntities.stream().filter(x -> x.GetCountryName().equals(countryName)).findFirst();
         if(c.isPresent()){
             selectableEntities.remove(c.get());
             selectedEntities.add(c.get());
@@ -38,7 +36,7 @@ public class CountryFilter {
     }
 
     public void DeselectCountry(String countryName){
-        Optional<Country> c = selectedEntities.stream().filter(x -> x.GetCountryName() == countryName).findFirst();
+        Optional<Country> c = selectedEntities.stream().filter(x -> x.GetCountryName().equals(countryName)).findFirst();
         if(c.isPresent()) {
             selectableEntities.add(c.get());
             selectedEntities.remove(c.get());
@@ -46,8 +44,12 @@ public class CountryFilter {
         }
     }
 
-    public void FilterSelectableEntities(Filter filter){
-        //TODO: implementa filtro
+
+    //TODO: il controller gestisce la IOException e segnala l'errore alla Ui in modo che l'utente lo veda
+    public void FilterSelectableEntities(Filter filter) throws IOException {
+        List<Country> newSelectableEntities = serviceApi.GetCountries(filter);
+        selectableEntities = newSelectableEntities;
+
         //TODO: spara evento aggiornamento UI
     }
 }

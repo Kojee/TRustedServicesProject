@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Filter {
+    //TODO: modificare usando i vari models al posto delle stringhe nelle liste
+
     private List<String> countryNames;
     private List<String> providerNames;
     private List<String> statusNames;
