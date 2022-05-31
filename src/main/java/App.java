@@ -29,7 +29,12 @@ public class App extends JFrame {
         //Inizializzo l'oggetto HttpTrustedServiceApi che verrà poi passato a tutti i filters tramite i relativi controllers
         HttpTrustedServiceApi service = new HttpTrustedServiceApi();
         //Inizializzo i filters passando il servizio
-        CountryFilter countryFilter = new CountryFilter(service);
+        CountryFilter countryFilter = null;
+        try {
+            countryFilter = new CountryFilter(service);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
         CountryController countryController = new CountryController(countryView, countryFilter);
 

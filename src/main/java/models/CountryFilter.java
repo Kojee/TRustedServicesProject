@@ -11,7 +11,13 @@ public class CountryFilter {
     private List<Country> selectedEntities;
 
     //TODO: aggiungi eventi modifica selectable e selected
+    // Usare subscriber pattern o observer pattern per sparare gli eventi
+    // Avrò un evento SelectedUpdated per notificare di eventuali modifiche alle entità selezionate (aggiunta/rimozione)
+    // e un altro SelectableUpdated per notificare di eventuali modifiche alle entità selezionabili (aggiunta/rimozione)
+    // SelectedUpdated interesserà i controller (aggiornamento view) e il service filter (filtraggio altri filter)
+    // SelectableUpdated interesserà solamente i controller (aggiornamento view)
 
+    //TODO: il controller gestisce la IOException e segnala l'errore alla Ui in modo che l'utente lo veda
     public CountryFilter(ITrustedServiceApi serviceApi) throws IOException {
         this.serviceApi = serviceApi;
         this.selectableEntities = serviceApi.GetCountries(null);
@@ -31,7 +37,7 @@ public class CountryFilter {
         if(c.isPresent()){
             selectableEntities.remove(c.get());
             selectedEntities.add(c.get());
-            //TODO: spara evento per aggiornare sia UI che avvisare ServiceFilter di aggiornare altri Filters
+            //TODO: spara evento SelectedUpdated e SelectableUpdated
         }
     }
 
@@ -40,7 +46,7 @@ public class CountryFilter {
         if(c.isPresent()) {
             selectableEntities.add(c.get());
             selectedEntities.remove(c.get());
-            //TODO: spara evento per aggiornare sia UI che avvisare ServiceFilter di aggiornare altri Filters
+            //TODO: spara evento SelectedUpdated e SelectableUpdated
         }
     }
 
@@ -50,6 +56,6 @@ public class CountryFilter {
         List<Country> newSelectableEntities = serviceApi.GetCountries(filter);
         selectableEntities = newSelectableEntities;
 
-        //TODO: spara evento aggiornamento UI
+        //TODO: spara evento SelectableUpdated
     }
 }

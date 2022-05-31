@@ -23,7 +23,8 @@ public class CountryController {
 
         //TODO: aggiungere sottoscrizione eventi di selezione delle righe delle JTable in CountryView
         //      la gestione di tali eventi richiamerà i metodi Select e Deselect nel model
-        //TODO: aggiungere sottoscrizione eventi emessi da CountryFilter (sono ancora da implementare)
+        //TODO: aggiungere sottoscrizione eventi emessi da CountryFilter  (SelectedUpdated, SelectableUpdated, sono ancora da implementare)
+        //      ObserverPattern/SubscriberPattern
         //      la gestione di tali eventi andrà ad aggiungere/rimuovere le righe dalle JTable
     }
 }
