@@ -17,16 +17,20 @@ public class ProviderController extends Observer {
         this.model = model;
         //TODO: popolare table view
         model.attach(this);
+        //TODO: aggiungere sottoscrizione eventi di selezione delle righe delle JTable in CountryView
+        //      la gestione di tali eventi richiamerà i metodi Select e Deselect nel model
     }
 
     @Override
     public void updateSelected(Subject s) {
+        //La selected list ha subito aggiornamenti, recupero il contenuto
         List<ServiceProvider> selectedProviders = model.getSelectedEntities();
         //TODO: aggiornare lista selected
     }
 
     @Override
     public void updateSelectable(Subject s) {
+        //La selectable list ha subito aggiornamenti, recupero il contenuto
         List<ServiceProvider> selectableProviders = model.getSelectableEntities();
         //TODO: aggiornare lista selectable
 

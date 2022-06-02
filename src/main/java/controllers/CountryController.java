@@ -31,12 +31,14 @@ public class CountryController extends Observer {
 
     @Override
     public void updateSelected(Subject s) {
+        //La selected list ha subito aggiornamenti, recupero il contenuto
         List<Country> selectedCountries = model.getSelectedEntities();
         //TODO: aggiornare la JTable
     }
 
     @Override
     public void updateSelectable(Subject s) {
+        //La selectable list ha subito aggiornamenti, recupero il contenuto
         List<Country> selectableCountries = model.getSelectableEntities();
         //TODO: aggiornare la JTable
     }
