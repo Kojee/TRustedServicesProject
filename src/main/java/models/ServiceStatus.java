@@ -1,5 +1,7 @@
 package models;
 
+import utils.Subject;
+
 public class ServiceStatus {
     private String status;
     public ServiceStatus(String status){

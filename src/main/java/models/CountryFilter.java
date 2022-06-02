@@ -1,21 +1,16 @@
 package models;
 
+import utils.Subject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CountryFilter {
+public class CountryFilter extends Subject {
     private ITrustedServiceApi serviceApi;
     private List<Country> selectableEntities;
     private List<Country> selectedEntities;
-
-    //TODO: aggiungi eventi modifica selectable e selected
-    // Usare subscriber pattern o observer pattern per sparare gli eventi
-    // Avrò un evento SelectedUpdated per notificare di eventuali modifiche alle entità selezionate (aggiunta/rimozione)
-    // e un altro SelectableUpdated per notificare di eventuali modifiche alle entità selezionabili (aggiunta/rimozione)
-    // SelectedUpdated interesserà i controller (aggiornamento view) e il service filter (filtraggio altri filter)
-    // SelectableUpdated interesserà solamente i controller (aggiornamento view)
 
     //TODO: il controller gestisce la IOException e segnala l'errore alla Ui in modo che l'utente lo veda
     public CountryFilter(ITrustedServiceApi serviceApi) throws IOException {
@@ -37,7 +32,8 @@ public class CountryFilter {
         if(c.isPresent()){
             selectableEntities.remove(c.get());
             selectedEntities.add(c.get());
-            //TODO: spara evento SelectedUpdated e SelectableUpdated
+            setSelectable();
+            setSelected();
         }
     }
 
@@ -46,16 +42,25 @@ public class CountryFilter {
         if(c.isPresent()) {
             selectableEntities.add(c.get());
             selectedEntities.remove(c.get());
-            //TODO: spara evento SelectedUpdated e SelectableUpdated
+            setSelectable();
+            setSelected();
         }
     }
 
 
     //TODO: il controller gestisce la IOException e segnala l'errore alla Ui in modo che l'utente lo veda
     public void FilterSelectableEntities(Filter filter) throws IOException {
-        List<Country> newSelectableEntities = serviceApi.GetCountries(filter);
+        /*Creo un filtro dove non popolo le countries,
+          altrimenti filterei anche per le country attualmente selezionate.
+          Questo non va bene perchè così facendo le country selezionabili
+          sarebbero sempre al più uguali alle country selezionate.
+         */
+        Filter selectableFilter = new Filter();
+        selectableFilter.setProviders(filter.getProviders());
+        selectableFilter.setTypes(filter.getTypes());
+        selectableFilter.setStatuses(filter.getStatuses());
+        List<Country> newSelectableEntities = serviceApi.GetCountries(selectableFilter);
         selectableEntities = newSelectableEntities;
-
-        //TODO: spara evento SelectableUpdated
+        setSelectable();
     }
 }

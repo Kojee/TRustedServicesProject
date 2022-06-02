@@ -1,9 +1,11 @@
 package models;
 
+import utils.Subject;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ServiceProvider {
+public class ServiceProvider extends Subject {
     private int tspId;
     private String name;
     private String countryCode;
