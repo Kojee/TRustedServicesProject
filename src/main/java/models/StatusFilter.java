@@ -1,5 +1,6 @@
 package models;
 
+import utils.Subject;
 import views.StatusView;
 
 import java.io.IOException;
@@ -7,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class StatusFilter {
+public class StatusFilter  extends Subject {
     private ITrustedServiceApi serviceApi;
     private List<ServiceStatus> selectableEntities;
     private List<ServiceStatus> selectedEntities;
@@ -23,7 +24,8 @@ public class StatusFilter {
         if(c.isPresent()){
             selectableEntities.remove(c.get());
             selectedEntities.add(c.get());
-            //TODO: spara evento per aggiornare sia UI che avvisare ServiceFilter di aggiornare altri Filters
+            setSelectable();
+            setSelected();
         }
     }
 
@@ -32,15 +34,24 @@ public class StatusFilter {
         if(c.isPresent()){
             selectableEntities.add(c.get());
             selectedEntities.remove(c.get());
-            //TODO: spara evento per aggiornare sia UI che avvisare ServiceFilter di aggiornare altri Filters
+            setSelectable();
+            setSelected();
         }
     }
 
     public void FilterSelectableEntities(Filter filter) throws IOException {
-        List<ServiceStatus> newSelectableEntities = serviceApi.GetServiceStatuses(filter);
+        /*Creo un filtro dove non popolo gli status,
+          altrimenti filtrerei anche per gli status attualmente selezionati.
+          Questo non va bene perchè così facendo gli status selezionabili
+          sarebbero sempre al più uguali agli status selezionati.
+         */
+        Filter selectableFilter = new Filter();
+        selectableFilter.setProviders(filter.getCountries());
+        selectableFilter.setTypes(filter.getProviders());
+        selectableFilter.setStatuses(filter.getTypes());
+        List<ServiceStatus> newSelectableEntities = serviceApi.GetServiceStatuses(selectableFilter);
         selectableEntities = newSelectableEntities;
-
-        //TODO: spara evento aggiornamento UI
+        setSelectable();
     }
 
     public List<ServiceStatus> getSelectableEntities(){

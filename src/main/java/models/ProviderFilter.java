@@ -1,11 +1,13 @@
 package models;
 
+import utils.Subject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ProviderFilter {
+public class ProviderFilter extends Subject {
     private ITrustedServiceApi serviceApi;
     private List<ServiceProvider> selectableEntities;
     private List<ServiceProvider> selectedEntities;
@@ -21,7 +23,8 @@ public class ProviderFilter {
         if(e.isPresent()){
             selectableEntities.remove(e.get());
             selectedEntities.add(e.get());
-            //TODO: spara evento per aggiornare sia UI che avvisare ServiceFilter di aggiornare altri Filters
+            setSelectable();
+            setSelected();
         }
     }
 
@@ -30,14 +33,25 @@ public class ProviderFilter {
         if(e.isPresent()){
             selectableEntities.add(e.get());
             selectedEntities.remove(e.get());
-            //TODO: spara evento per aggiornare sia UI che avvisare ServiceFilter di aggiornare altri Filters
+            setSelectable();
+            setSelected();
         }
     }
 
     public void FilterSelectableEntities(Filter filter) throws IOException {
-        List<ServiceProvider> newSelectableEntities = serviceApi.GetServiceProviders(filter);
+        /*Creo un filtro dove non popolo i providers,
+          altrimenti filtrerei anche per i providers attualmente selezionati.
+          Questo non va bene perchè così facendo i providers selezionabili
+          sarebbero sempre al più uguali ai providers selezionati.
+         */
+        Filter selectableFilter = new Filter();
+        selectableFilter.setProviders(filter.getCountries());
+        selectableFilter.setTypes(filter.getTypes());
+        selectableFilter.setStatuses(filter.getStatuses());
+
+        List<ServiceProvider> newSelectableEntities = serviceApi.GetServiceProviders(selectableFilter);
         selectableEntities = newSelectableEntities;
-        //TODO: spara evento aggiornamento UI
+        setSelectable();
     }
     public List<ServiceProvider> getSelectableEntities(){
         return selectableEntities;
