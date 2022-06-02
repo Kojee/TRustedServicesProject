@@ -32,10 +32,10 @@ public class ServiceFilter extends Observer {
 
     public List<Service> getServices(){
         Filter f = new Filter();
-        f.setStatuses(statusFilter.getSelectedEntities().stream().map(s -> s.getStatus()).collect(Collectors.toList()));
-        f.setTypes(typeFilter.getSelectedEntities().stream().map(t -> t.getName()).collect(Collectors.toList()));
-        f.setProviders(providerFilter.getSelectedEntities().stream().map(p -> p.getName()).collect(Collectors.toList()));
-        f.setCountries(countryFilter.getSelectedEntities().stream().map(c -> c.GetCountryName()).collect(Collectors.toList()));
+        f.setStatuses(statusFilter.getSelectedEntities());
+        f.setTypes(typeFilter.getSelectedEntities());
+        f.setProviders(providerFilter.getSelectedEntities());
+        f.setCountries(countryFilter.getSelectedEntities());
         return serviceApi.GetServices(f);
     }
 
@@ -43,10 +43,10 @@ public class ServiceFilter extends Observer {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
-        f.setStatuses(statusFilter.getSelectedEntities().stream().map(s -> s.getStatus()).collect(Collectors.toList()));
-        f.setTypes(typeFilter.getSelectedEntities().stream().map(t -> t.getName()).collect(Collectors.toList()));
-        f.setProviders(providerFilter.getSelectedEntities().stream().map(p -> p.getName()).collect(Collectors.toList()));
-        f.setCountries(countryFilter.getSelectedEntities().stream().map(c -> c.GetCountryName()).collect(Collectors.toList()));
+        f.setStatuses(statusFilter.getSelectedEntities());
+        f.setTypes(typeFilter.getSelectedEntities());
+        f.setProviders(providerFilter.getSelectedEntities());
+        f.setCountries(countryFilter.getSelectedEntities());
 
         statusFilter.FilterSelectableEntities(f);
         providerFilter.FilterSelectableEntities(f);
@@ -57,10 +57,10 @@ public class ServiceFilter extends Observer {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
-        f.setStatuses(statusFilter.getSelectedEntities().stream().map(s -> s.getStatus()).collect(Collectors.toList()));
-        f.setTypes(typeFilter.getSelectedEntities().stream().map(t -> t.getName()).collect(Collectors.toList()));
-        f.setProviders(providerFilter.getSelectedEntities().stream().map(p -> p.getName()).collect(Collectors.toList()));
-        f.setCountries(countryFilter.getSelectedEntities().stream().map(c -> c.GetCountryName()).collect(Collectors.toList()));
+        f.setStatuses(statusFilter.getSelectedEntities());
+        f.setTypes(typeFilter.getSelectedEntities());
+        f.setProviders(providerFilter.getSelectedEntities());
+        f.setCountries(countryFilter.getSelectedEntities());
 
         countryFilter.FilterSelectableEntities(f);
         providerFilter.FilterSelectableEntities(f);
@@ -71,10 +71,10 @@ public class ServiceFilter extends Observer {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
-        f.setStatuses(statusFilter.getSelectedEntities().stream().map(s -> s.getStatus()).collect(Collectors.toList()));
-        f.setTypes(typeFilter.getSelectedEntities().stream().map(t -> t.getName()).collect(Collectors.toList()));
-        f.setProviders(providerFilter.getSelectedEntities().stream().map(p -> p.getName()).collect(Collectors.toList()));
-        f.setCountries(countryFilter.getSelectedEntities().stream().map(c -> c.GetCountryName()).collect(Collectors.toList()));
+        f.setStatuses(statusFilter.getSelectedEntities());
+        f.setTypes(typeFilter.getSelectedEntities());
+        f.setProviders(providerFilter.getSelectedEntities());
+        f.setCountries(countryFilter.getSelectedEntities());
 
         statusFilter.FilterSelectableEntities(f);
         providerFilter.FilterSelectableEntities(f);
@@ -85,10 +85,10 @@ public class ServiceFilter extends Observer {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
-        f.setStatuses(statusFilter.getSelectedEntities().stream().map(s -> s.getStatus()).collect(Collectors.toList()));
-        f.setTypes(typeFilter.getSelectedEntities().stream().map(t -> t.getName()).collect(Collectors.toList()));
-        f.setProviders(providerFilter.getSelectedEntities().stream().map(p -> p.getName()).collect(Collectors.toList()));
-        f.setCountries(countryFilter.getSelectedEntities().stream().map(c -> c.GetCountryName()).collect(Collectors.toList()));
+        f.setStatuses(statusFilter.getSelectedEntities());
+        f.setTypes(typeFilter.getSelectedEntities());
+        f.setProviders(providerFilter.getSelectedEntities());
+        f.setCountries(countryFilter.getSelectedEntities());
 
         statusFilter.FilterSelectableEntities(f);
         countryFilter.FilterSelectableEntities(f);

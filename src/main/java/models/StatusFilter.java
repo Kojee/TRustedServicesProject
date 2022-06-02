@@ -46,9 +46,9 @@ public class StatusFilter  extends Subject {
           sarebbero sempre al più uguali agli status selezionati.
          */
         Filter selectableFilter = new Filter();
-        selectableFilter.setProviders(filter.getCountries());
-        selectableFilter.setTypes(filter.getProviders());
-        selectableFilter.setStatuses(filter.getTypes());
+        selectableFilter.setCountries(filter.getCountries());
+        selectableFilter.setProviders(filter.getProviders());
+        selectableFilter.setTypes(filter.getTypes());
         List<ServiceStatus> newSelectableEntities = serviceApi.GetServiceStatuses(selectableFilter);
         selectableEntities = newSelectableEntities;
         setSelectable();

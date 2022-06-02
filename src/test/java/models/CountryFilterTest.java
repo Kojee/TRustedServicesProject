@@ -78,6 +78,8 @@ class CountryFilterTest {
     @Test
     void filterSelectableEntities() throws IOException {
         HttpTrustedServiceApi serviceApi = new HttpTrustedServiceApi();
+        List<ServiceProvider> allProviders = serviceApi.GetServiceProviders(null);
+
         CountryFilter model = new CountryFilter(serviceApi);
         int totalEntities = model.getSelectableEntities().size();
 
@@ -86,22 +88,31 @@ class CountryFilterTest {
         assertTrue(model.getSelectableEntities().size() == totalEntities);
 
 
-        List<String> countries = new ArrayList<>();
-        countries.add("Italy");
+        List<Country> countries = new ArrayList<>();
+        countries.add(new Country("IT", "Italy"));
         f.setCountries(countries);
         model.FilterSelectableEntities(f);
         assertTrue(model.getSelectableEntities().size() == totalEntities);
 
-        List<String> providers = new ArrayList<>();
-        providers.add("1&1 De-Mail GmbH");
+        List<ServiceProvider> providers = new ArrayList<>();
+        providers.add(allProviders.stream().filter(p -> p.getName().equals("1&1 De-Mail GmbH")).findFirst().get());
         f.setProviders(providers);
         model.FilterSelectableEntities(f);
         assertTrue(model.getSelectableEntities().size() == 1);
         assertTrue(model.getSelectableEntities().get(0).GetCountryName().equals("Germany"));
 
+        providers.add(allProviders.stream().filter(p -> p.getName().equals("Actalis S.p.A.")).findFirst().get());
+        f.setProviders(providers);
+        model.FilterSelectableEntities(f);
+        assertTrue(model.getSelectableEntities().isEmpty());
+
         f = new Filter();
         model.FilterSelectableEntities(f);
-        assertTrue(model.getSelectableEntities().size() == totalEntities);
+        assertTrue(model.getSelectableEntities().size() == 2);
+        assertTrue(model.getSelectableEntities().get(0).GetCountryName().equals("Germany"));
+        assertTrue(model.getSelectableEntities().get(1).GetCountryName().equals("Italy"));
+
+
 
     }
 }

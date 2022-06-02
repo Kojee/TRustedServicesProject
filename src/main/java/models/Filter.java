@@ -6,31 +6,31 @@ import java.util.List;
 public class Filter {
     //TODO: modificare usando i vari models al posto delle stringhe nelle liste
 
-    private List<String> countryNames;
-    private List<String> providerNames;
-    private List<String> statusNames;
-    private List<String> typeNames;
+    private List<Country> countryNames;
+    private List<ServiceProvider> providerNames;
+    private List<ServiceStatus> statusNames;
+    private List<ServiceType> typeNames;
 
 
-    public List<String> getCountries() {
+    public List<Country> getCountries() {
         return countryNames;
     }
-    public void setCountries(List<String> countries) { this.countryNames = countries; }
+    public void setCountries(List<Country> countries) { this.countryNames = countries; }
 
-    public List<String> getProviders() {
+    public List<ServiceProvider> getProviders() {
         return providerNames;
     }
-    public void setProviders(List<String> providers) { this.providerNames = providers; }
+    public void setProviders(List<ServiceProvider> providers) { this.providerNames = providers; }
 
-    public List<String> getStatuses() {
+    public List<ServiceStatus> getStatuses() {
         return statusNames;
     }
-    public void setStatuses(List<String> statuses) { this.statusNames = statuses; }
+    public void setStatuses(List<ServiceStatus> statuses) { this.statusNames = statuses; }
 
-    public List<String> getTypes() {
+    public List<ServiceType> getTypes() {
         return typeNames;
     }
-    public void setTypes(List<String> types) { this.typeNames = types; }
+    public void setTypes(List<ServiceType> types) { this.typeNames = types; }
 
 
     public Filter(){

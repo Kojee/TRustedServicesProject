@@ -45,7 +45,7 @@ public class ProviderFilter extends Subject {
           sarebbero sempre al più uguali ai providers selezionati.
          */
         Filter selectableFilter = new Filter();
-        selectableFilter.setProviders(filter.getCountries());
+        selectableFilter.setCountries(filter.getCountries());
         selectableFilter.setTypes(filter.getTypes());
         selectableFilter.setStatuses(filter.getStatuses());
 

@@ -45,8 +45,8 @@ public class TypeFilter  extends Subject {
           sarebbero sempre al più uguali ai types selezionati.
          */
         Filter selectableFilter = new Filter();
-        selectableFilter.setProviders(filter.getCountries());
-        selectableFilter.setTypes(filter.getProviders());
+        selectableFilter.setCountries(filter.getCountries());
+        selectableFilter.setProviders(filter.getProviders());
         selectableFilter.setStatuses(filter.getStatuses());
         List<ServiceType> newSelectableEntities = serviceApi.GetServiceTypes(selectableFilter);
         selectableEntities = newSelectableEntities;

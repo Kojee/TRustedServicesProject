@@ -10,4 +10,16 @@ public class ServiceType {
     public String getName() {
         return name;
     }
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj)
+            return true;
+        return this.getName().equals(((ServiceType)obj).getName());
+
+    }
+
+    @Override
+    public int hashCode() {
+        return this.name.hashCode();
+    }
 }
