@@ -44,6 +44,8 @@ public class TypeFilter  extends Subject {
           Questo non va bene perchè così facendo i types selezionabili
           sarebbero sempre al più uguali ai types selezionati.
          */
+        if(filter == null)
+            throw new IllegalArgumentException();
         Filter selectableFilter = new Filter();
         selectableFilter.setCountries(filter.getCountries());
         selectableFilter.setProviders(filter.getProviders());

@@ -2,6 +2,8 @@ package models;
 
 import utils.Subject;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,11 +19,11 @@ public class ServiceProvider extends Subject {
     }
 
     public List<String> getStatuses(){
-        return services
+        List<String> statuses = services
                 .stream()
-                .map(x -> x.getCurrentStatus())
-                .distinct()
-                .collect(Collectors.toList());
+                .map(x -> x.getCurrentStatus()).toList();
+        statuses = new ArrayList<>(new HashSet<>(statuses));
+        return statuses;
     }
     public int getId() {
         return tspId;
