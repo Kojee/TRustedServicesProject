@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -20,6 +21,62 @@ import java.util.stream.Collectors;
 public class HttpTrustedServiceApi implements ITrustedServiceApi{
     @Override
     public List<Country> GetCountries(Filter filter) throws IOException {
+        //Ottengo i providers filtrati
+        List<ServiceProvider> providers = GetServiceProviders(filter);
+            /*Ottengo lista di providers con le seguenti caratteristiche:
+                - Providers presenti tra quelli presenti nel filtro
+                - Providers con nazione contenuta tra quelle presenti nel filtro
+                - Providers con servizi aventi tipi contenuti tra quelli nel filtro
+                - Providers con servizi aventi status contenuti tra quelli nel filtro
+              I providers ritornati però contengono tutti i loro servizi, anche quelli che hanno tipo e status non compatibile
+              Vanno filtrati ulteriormente. Per fare ciò estraiamo i servizi.
+            */
+        List<Service> filteredServices = new ArrayList<>();
+        for(ServiceProvider p : providers)
+            filteredServices.addAll(p.getServices());
+
+        //Andiamo ora a filtrare i servizi per type e status
+        if(filter != null){
+            if(!filter.getStatuses().isEmpty()) {
+                List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
+                filteredServices = filteredServices
+                        .stream()
+                        .filter(s -> statusNames.contains(s.getCurrentStatus()))
+                        .collect(Collectors.toList());
+            }
+
+            if(!filter.getTypes().isEmpty()) {
+                List<Service> typeFilteredServices = new ArrayList<>();
+                List<String> filterTypeCodes = filter
+                        .getTypes()
+                        .stream()
+                        .map(t -> t.getName())
+                        .collect(Collectors.toList());
+                for (Service s : filteredServices) {
+                    //Eseguo l'intersezione tra i tipi del servizio e i tipi contenuti nel filtro
+                    Set<String> intersectRes = s.getqServiceTypes()
+                            .stream()
+                            .filter(filterTypeCodes::contains)
+                            .collect(Collectors.toSet());
+                    //Tengo solo i tipi la cui intersezione non è vuota
+                    if (!intersectRes.isEmpty())
+                        typeFilteredServices.add(s);
+                }
+                filteredServices = typeFilteredServices;
+            }
+        }
+        //Andiamo ora ad estrarre le countries
+        List<String> counrtyCodes = filteredServices
+                .stream()
+                .map(s -> s.getCountryCode())
+                .toList();
+
+        //Otteniamo gli oggetti country dalla lista completa e filtriamo per i country codes trovati
+        List<Country> countries = getAllCountries();
+        return countries.stream().filter(c -> counrtyCodes.contains(c.GetCountryCode())).collect(Collectors.toList());
+    }
+
+    private List<Country> getAllCountries() throws IOException {
         URL url = new URL("https://esignature.ec.europa.eu/efda/tl-browser/api/v1/search/countries_list");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
@@ -37,35 +94,6 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
             Type collectionType = new TypeToken<ArrayList<Country>>(){}.getType();
             List<Country> countries = gson.fromJson(response.toString(), collectionType);
 
-            if(filter != null){
-                //Applichiamo il filtro ai providers se presente
-                if(!filter.getProviders().isEmpty()){
-                    List<String> providerCountryCode = filter
-                            .getProviders()
-                            .stream()
-                            .map(p -> p.getCountryCode())
-                            .collect(Collectors.toList());
-
-
-                    countries = countries
-                            .stream()
-                            .filter(c -> providerCountryCode.contains(c.GetCountryCode()))
-                            .collect(Collectors.toList());
-                }
-
-                //Applichiamo il filtro sulle country se presente
-                if(!filter.getCountries().isEmpty()){
-                    countries = countries
-                            .stream()
-                            .filter(c -> filter.getCountries().contains(c))
-                            .collect(Collectors.toList());
-                }
-
-                //TODO: aggiungi filtro su type e status
-                if(!filter.getTypes().isEmpty()){
-
-                }
-            }
             return countries;
         }
         return null;
@@ -180,11 +208,13 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
 
             //Andiamo ora a filtrare i servizi per type e status
             if(filter != null){
-                if(!filter.getStatuses().isEmpty())
+                if(!filter.getStatuses().isEmpty()) {
+                    List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
                     filteredServices = filteredServices
                             .stream()
-                            .filter(s -> filter.getStatuses().contains(s.getCurrentStatus()))
+                            .filter(s -> statusNames.contains(s.getCurrentStatus()))
                             .collect(Collectors.toList());
+                }
 
                 if(!filter.getTypes().isEmpty()){
                     List<Service> typeFilteredServices = new ArrayList<>();
@@ -202,8 +232,8 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
                         //Tengo solo i tipi la cui intersezione non è vuota
                         if (!intersectRes.isEmpty())
                             typeFilteredServices.add(s);
-                        filteredServices = typeFilteredServices;
                     }
+                    filteredServices = typeFilteredServices;
                 }
 
             }
@@ -242,11 +272,13 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
 
             //Andiamo ora a filtrare i servizi per status
             if(filter != null){
-                if(!filter.getStatuses().isEmpty())
+                if(!filter.getStatuses().isEmpty()) {
+                    List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
                     filteredServices = filteredServices
                             .stream()
-                            .filter(s -> filter.getStatuses().contains(s.getCurrentStatus()))
+                            .filter(s -> statusNames.contains(s.getCurrentStatus()))
                             .collect(Collectors.toList());
+                }
             }
 
 

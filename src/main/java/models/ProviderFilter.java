@@ -44,6 +44,8 @@ public class ProviderFilter extends Subject {
           Questo non va bene perchè così facendo i providers selezionabili
           sarebbero sempre al più uguali ai providers selezionati.
          */
+        if(filter == null)
+            throw new IllegalArgumentException();
         Filter selectableFilter = new Filter();
         selectableFilter.setCountries(filter.getCountries());
         selectableFilter.setTypes(filter.getTypes());

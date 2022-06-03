@@ -55,6 +55,8 @@ public class CountryFilter extends Subject {
           Questo non va bene perchè così facendo le country selezionabili
           sarebbero sempre al più uguali alle country selezionate.
          */
+        if(filter == null)
+            throw new IllegalArgumentException();
         Filter selectableFilter = new Filter();
         selectableFilter.setProviders(filter.getProviders());
         selectableFilter.setTypes(filter.getTypes());

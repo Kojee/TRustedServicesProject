@@ -45,6 +45,8 @@ public class StatusFilter  extends Subject {
           Questo non va bene perchè così facendo gli status selezionabili
           sarebbero sempre al più uguali agli status selezionati.
          */
+        if(filter == null)
+            throw new IllegalArgumentException();
         Filter selectableFilter = new Filter();
         selectableFilter.setCountries(filter.getCountries());
         selectableFilter.setProviders(filter.getProviders());
