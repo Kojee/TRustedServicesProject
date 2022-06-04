@@ -1,8 +1,6 @@
 import models.*;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -87,7 +85,11 @@ public class AppCLI {
                             }
                             break;
                         case "get-services":
-                            printServices();
+                            removeCommandLine = line.replace("get-services", "").trim();
+                            if(removeCommandLine.isEmpty())
+                                printServices();
+                            else
+                                printServices(removeCommandLine);
                             break;
                         default:
                             System.out.println("Command not found");
@@ -114,6 +116,41 @@ public class AppCLI {
                             s.getCurrentStatus(),
                             String.join(",", s.getqServiceTypes())
                     ));
+    }
+
+    private static void printServices(String fileName) {
+
+        File f = new File(fileName);
+        String dirPath = f.getParent();
+        if(dirPath != null) {
+            File dir = new File(dirPath);
+            if (dir != null && !dir.exists())
+                dir.mkdir();
+        }
+        BufferedWriter writer = null;
+        try {
+            writer = new BufferedWriter(new FileWriter(fileName));
+        } catch (IOException e) {
+            System.out.println("Could not create file writer: " + e.getMessage());
+            return;
+        }
+        List<Service> serviceList = serviceFilter.getServices();
+        try {
+            writer.write("Service name | Country Code | Status | Types\n");
+            for(Service s : serviceList)
+                writer.write(
+                        String.format("%s | %s | %s | %s\n",
+                                s.getServiceName(),
+                                s.getCountryCode(),
+                                s.getCurrentStatus(),
+                                String.join(",", s.getqServiceTypes())
+                        ));
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Could nto write to file");
+        }
+
+
     }
 
     private static void filterEntities(String entityName, String filterString, boolean add) {
@@ -211,6 +248,6 @@ public class AppCLI {
         System.out.println("\tentity-name: type | status | country | provider");
         System.out.println("remove-filter entity_name string: remove string filter from entity_name");
         System.out.println("\tentity-name: type | status | country | provider");
-        System.out.println("get-services: print the list of services based on the currently selected entities");
+        System.out.println("get-services [filename]: print the list of services based on the currently selected entities. If [filename] is provided, print result to filename");
     }
 }
