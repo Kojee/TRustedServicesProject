@@ -15,7 +15,7 @@ public class App extends JFrame {
     private JPanel servicesPanel;
     public App(){
         setTitle("Trusted Services");
-        setSize(1000, 400);
+        setSize(1000, 600);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         FlowLayout layout = new FlowLayout();
@@ -54,7 +54,6 @@ public class App extends JFrame {
     public static void main(String[] args) {
 
         EventQueue.invokeLater(() -> {
-
             var app = new App();
             app.setVisible(true);
         });
