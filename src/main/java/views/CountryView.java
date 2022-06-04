@@ -11,11 +11,11 @@ public class CountryView extends JPanel {
     public CountryView(){
         //Creo il pannello che conterrà le due tabelle
         subPanel = new JPanel();
-        subPanel.setPreferredSize(new Dimension(250, 400));
+        subPanel.setPreferredSize(new Dimension(200, 400));
         add(subPanel);
         //Creo tabella Paesi selezionabili
         selectableEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selectable Country"}));
-        selectableEntitiesTable.setPreferredScrollableViewportSize(new Dimension(200,180));
+        selectableEntitiesTable.setPreferredScrollableViewportSize(new Dimension(180,180));
         selectableEntitiesTable.setFillsViewportHeight(true);
         selectableEntitiesTable.setDefaultEditor(Object.class, null);
         selectableEntitiesTable.setRowSelectionAllowed(false);
@@ -24,7 +24,7 @@ public class CountryView extends JPanel {
         subPanel.add(selectableEntitiesScroll);
         //Creo tabella Paesi selezionati
         selectedEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selected Country"}));
-        selectedEntitiesTable.setPreferredScrollableViewportSize(new Dimension(200,180));
+        selectedEntitiesTable.setPreferredScrollableViewportSize(new Dimension(180,180));
         selectedEntitiesTable.setFillsViewportHeight(true);
         selectableEntitiesTable.setDefaultEditor(Object.class, null);
         selectedEntitiesTable.setRowSelectionAllowed(false);
