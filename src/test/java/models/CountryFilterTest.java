@@ -17,25 +17,25 @@ class CountryFilterTest {
         CountryFilter model = new CountryFilter(serviceApi);
         int totalEntities = model.getSelectableEntities().size();
 
-        model.SelectCountry("Italy");
+        model.SelectEntity("Italy");
         List<Country> selectedEntities = model.getSelectedEntities();
         assertTrue(selectedEntities.size() == 1
             && selectedEntities.get(0).GetCountryName().equals("Italy"));
 
-        model.SelectCountry("ABC");
+        model.SelectEntity("ABC");
         selectedEntities = model.getSelectedEntities();
         List<Country> selectableEntities = model.getSelectableEntities();
         assertTrue(selectedEntities.size() == 1);
         assertTrue(selectedEntities.get(0).GetCountryName().equals("Italy"));
 
-        model.SelectCountry("Germany");
+        model.SelectEntity("Germany");
         selectedEntities = model.getSelectedEntities();
         selectableEntities = model.getSelectableEntities();
         assertTrue(selectedEntities.size() == 2);
         assertTrue(selectedEntities.get(0).GetCountryName().equals("Italy"));
         assertTrue(selectedEntities.get(1).GetCountryName().equals("Germany"));
 
-        model.SelectCountry(null);
+        model.SelectEntity(null);
         selectedEntities = model.getSelectedEntities();
         selectableEntities = model.getSelectableEntities();
         assertTrue(selectedEntities.size() == 2);
@@ -49,28 +49,28 @@ class CountryFilterTest {
         CountryFilter model = new CountryFilter(serviceApi);
         int totalEntities = model.getSelectableEntities().size();
 
-        model.DeselectCountry("Italy");
+        model.DeselectEntity("Italy");
         assertTrue(model.getSelectedEntities().isEmpty());
         assertTrue(model.getSelectableEntities().size() == totalEntities);
 
-        model.SelectCountry("Italy");
+        model.SelectEntity("Italy");
 
-        model.DeselectCountry("Italy");
+        model.DeselectEntity("Italy");
         assertTrue(model.getSelectedEntities().isEmpty());
         assertTrue(model.getSelectableEntities().size() == totalEntities);
 
-        model.DeselectCountry(null);
+        model.DeselectEntity(null);
         assertTrue(model.getSelectedEntities().isEmpty());
         assertTrue(model.getSelectableEntities().size() == totalEntities);
 
-        model.DeselectCountry("ABC");
+        model.DeselectEntity("ABC");
         assertTrue(model.getSelectedEntities().isEmpty());
         assertTrue(model.getSelectableEntities().size() == totalEntities);
 
-        model.SelectCountry("Italy");
-        model.SelectCountry("Germany");
+        model.SelectEntity("Italy");
+        model.SelectEntity("Germany");
 
-        model.DeselectCountry("Italy");
+        model.DeselectEntity("Italy");
         assertTrue(model.getSelectedEntities().size() == 1);
         assertTrue(model.getSelectableEntities().size() == totalEntities - 1);
         assertTrue(model.getSelectedEntities().get(0).GetCountryName().equals("Germany"));

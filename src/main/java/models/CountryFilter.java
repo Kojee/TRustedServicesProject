@@ -27,7 +27,7 @@ public class CountryFilter extends Subject {
         return selectedEntities;
     }
 
-    public void SelectCountry(String countryName){
+    public void SelectEntity(String countryName){
         Optional<Country> c = selectableEntities.stream().filter(x -> x.GetCountryName().equals(countryName)).findFirst();
         if(c.isPresent()){
             selectableEntities.remove(c.get());
@@ -37,7 +37,7 @@ public class CountryFilter extends Subject {
         }
     }
 
-    public void DeselectCountry(String countryName){
+    public void DeselectEntity(String countryName){
         Optional<Country> c = selectedEntities.stream().filter(x -> x.GetCountryName().equals(countryName)).findFirst();
         if(c.isPresent()) {
             selectableEntities.add(c.get());
