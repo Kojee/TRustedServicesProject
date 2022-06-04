@@ -8,22 +8,26 @@ public class ProviderView extends JPanel {
     private JPanel subPanel;
     private JTable selectableEntitiesTable;
     private JTable selectedEntitiesTable;
-
     public ProviderView(){
+        //Creo il pannello che conterrà le due tabelle
         subPanel = new JPanel();
-        subPanel.setPreferredSize(new Dimension(250, 500));
+        subPanel.setPreferredSize(new Dimension(250, 400));
         add(subPanel);
-
-        selectableEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selectable Provider"}));
-        selectableEntitiesTable.setPreferredScrollableViewportSize(new Dimension(200,200));
+        //Creo tabella Paesi selezionabili
+        selectableEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selectable Country"}));
+        selectableEntitiesTable.setPreferredScrollableViewportSize(new Dimension(200,180));
         selectableEntitiesTable.setFillsViewportHeight(true);
+        selectableEntitiesTable.setDefaultEditor(Object.class, null);
+        selectableEntitiesTable.setRowSelectionAllowed(false);
         JScrollPane selectableEntitiesScroll = new JScrollPane(selectableEntitiesTable);
         selectableEntitiesScroll.setVisible(true);
         subPanel.add(selectableEntitiesScroll);
-
-        selectedEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selected Provider"}));
-        selectedEntitiesTable.setPreferredScrollableViewportSize(new Dimension(200,200));
+        //Creo tabella Paesi selezionati
+        selectedEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selected Country"}));
+        selectedEntitiesTable.setPreferredScrollableViewportSize(new Dimension(200,180));
         selectedEntitiesTable.setFillsViewportHeight(true);
+        selectableEntitiesTable.setDefaultEditor(Object.class, null);
+        selectedEntitiesTable.setRowSelectionAllowed(false);
         JScrollPane selectedEntitiesScroll = new JScrollPane(selectedEntitiesTable);
         selectedEntitiesScroll.setVisible(true);
         subPanel.add(selectedEntitiesScroll);
