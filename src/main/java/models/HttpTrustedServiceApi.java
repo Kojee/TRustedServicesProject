@@ -19,6 +19,61 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class HttpTrustedServiceApi implements ITrustedServiceApi{
+    private List<ServiceProvider> cachedProviders;
+    private List<Country> cachedCountries;
+
+    public HttpTrustedServiceApi() throws IOException {
+        cachedProviders = new ArrayList<>();
+        cachedCountries = new ArrayList<>();
+        loadProviders();
+        loadCountries();
+    }
+
+    private void loadProviders() throws IOException {
+        URL url = new URL("https://esignature.ec.europa.eu/efda/tl-browser/api/v1/search/tsp_list");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        int statusCode = connection.getResponseCode();
+        if(statusCode == HttpURLConnection.HTTP_OK){
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while((inputLine = in.readLine()) != null){
+                response.append(inputLine);
+            }
+            in.close();
+            Gson gson = new Gson();
+
+            Type collectionType = new TypeToken<ArrayList<ServiceProvider>>(){}.getType();
+            List<ServiceProvider> providers = gson.fromJson(response.toString(), collectionType);
+
+            this.cachedProviders = providers;
+        }
+    }
+
+    private void loadCountries() throws IOException {
+        URL url = new URL("https://esignature.ec.europa.eu/efda/tl-browser/api/v1/search/countries_list");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        int statusCode = connection.getResponseCode();
+        if(statusCode == HttpURLConnection.HTTP_OK){
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while((inputLine = in.readLine()) != null){
+                response.append(inputLine);
+            }
+            in.close();
+            Gson gson = new Gson();
+
+            Type collectionType = new TypeToken<ArrayList<Country>>(){}.getType();
+            List<Country> countries = gson.fromJson(response.toString(), collectionType);
+
+
+            this.cachedCountries = countries;
+        }
+    }
+
     @Override
     public List<Country> GetCountries(Filter filter) throws IOException {
         //Ottengo i providers filtrati
@@ -72,120 +127,79 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
                 .toList();
 
         //Otteniamo gli oggetti country dalla lista completa e filtriamo per i country codes trovati
-        List<Country> countries = getAllCountries();
-        return countries.stream().filter(c -> counrtyCodes.contains(c.GetCountryCode())).collect(Collectors.toList());
-    }
-
-    private List<Country> getAllCountries() throws IOException {
-        URL url = new URL("https://esignature.ec.europa.eu/efda/tl-browser/api/v1/search/countries_list");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        int statusCode = connection.getResponseCode();
-        if(statusCode == HttpURLConnection.HTTP_OK){
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while((inputLine = in.readLine()) != null){
-                response.append(inputLine);
-            }
-            in.close();
-            Gson gson = new Gson();
-
-            Type collectionType = new TypeToken<ArrayList<Country>>(){}.getType();
-            List<Country> countries = gson.fromJson(response.toString(), collectionType);
-
-            return countries;
-        }
-        return null;
+        return this.cachedCountries.stream().filter(c -> counrtyCodes.contains(c.GetCountryCode())).collect(Collectors.toList());
     }
 
     @Override
-    public List<ServiceProvider> GetServiceProviders(Filter filter) throws IOException {
-        URL url = new URL("https://esignature.ec.europa.eu/efda/tl-browser/api/v1/search/tsp_list");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        int statusCode = connection.getResponseCode();
-        if(statusCode == HttpURLConnection.HTTP_OK){
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-            while((inputLine = in.readLine()) != null){
-                response.append(inputLine);
+    public List<ServiceProvider> GetServiceProviders(Filter filter) throws IOException{
+        List<ServiceProvider> providers = new ArrayList<>(this.cachedProviders);
+
+
+        if(filter != null){
+            //Applichiamo il filtro ai providers
+            if(!filter.getProviders().isEmpty()){
+                providers = providers
+                        .stream()
+                        .filter(p -> filter.getProviders().contains(p))
+                        .collect(Collectors.toList());
             }
-            in.close();
-            Gson gson = new Gson();
+            if(!filter.getCountries().isEmpty()){
+                //Estraggo i countryCodes dal filtro
+                List<String> validCountryCodes = filter
+                        .getCountries()
+                        .stream()
+                        .map(c -> c.GetCountryCode())
+                        .collect(Collectors.toList());
 
-            Type collectionType = new TypeToken<ArrayList<ServiceProvider>>(){}.getType();
-            List<ServiceProvider> providers = gson.fromJson(response.toString(), collectionType);
-
-
-            if(filter != null){
-                //Applichiamo il filtro ai providers
-                if(!filter.getProviders().isEmpty()){
-                    providers = providers
-                            .stream()
-                            .filter(p -> filter.getProviders().contains(p))
-                            .collect(Collectors.toList());
-                }
-                if(!filter.getCountries().isEmpty()){
-                    //Estraggo i countryCodes dal filtro
-                    List<String> validCountryCodes = filter
-                            .getCountries()
-                            .stream()
-                            .map(c -> c.GetCountryCode())
-                            .collect(Collectors.toList());
-
-                    //Filtro i providers per countryCode
-                    providers = providers
-                            .stream()
-                            .filter(p -> validCountryCodes.contains(p.getCountryCode()))
-                            .collect(Collectors.toList());
-                }
-
-                //Filtro per type
-                if(!filter.getTypes().isEmpty()){
-                    List<ServiceProvider> filteredProviders = new ArrayList<>();
-                    //Eseguo intersezione tra i tipi nel filtro e i tipi di ogni providers
-                    List<String> filterTypeCodes = filter
-                            .getTypes()
-                            .stream()
-                            .map(t -> t.getName())
-                            .collect(Collectors.toList());
-                    for(ServiceProvider p : providers) {
-                        Set<String> intersectRes = p.getqServiceTypes()
-                                .stream()
-                                .filter(filterTypeCodes::contains)
-                                .collect(Collectors.toSet());
-                        //Tengo solo i providers la cui intersezione con i tipi nel filtro non è vuota
-                        if (!intersectRes.isEmpty())
-                            filteredProviders.add(p);
-                    }
-                    providers = filteredProviders;
-                }
-
-
-                //Filtro per status
-                if(!filter.getStatuses().isEmpty()){
-                    List<ServiceProvider> filteredProviders = new ArrayList<>();
-                    //Estraggo gli status name
-                    List<String> filterStatusCodes = filter
-                            .getStatuses()
-                            .stream()
-                            .map(s -> s.getStatus())
-                            .collect(Collectors.toList());
-
-                    for(ServiceProvider p : providers){
-                        //Se il provider ha almeno un servizio con lo status tra quelli presenti nel filtro
-                        //aggiungo il provider alla lista finale
-                        if(p.getServices().stream().anyMatch(s -> filterStatusCodes.contains(s.getCurrentStatus())))
-                            filteredProviders.add(p);
-                    }
-                    providers = filteredProviders;
-                }
+                //Filtro i providers per countryCode
+                providers = providers
+                        .stream()
+                        .filter(p -> validCountryCodes.contains(p.getCountryCode()))
+                        .collect(Collectors.toList());
             }
-            return providers;
+
+            //Filtro per type
+            if(!filter.getTypes().isEmpty()){
+                List<ServiceProvider> filteredProviders = new ArrayList<>();
+                //Eseguo intersezione tra i tipi nel filtro e i tipi di ogni providers
+                List<String> filterTypeCodes = filter
+                        .getTypes()
+                        .stream()
+                        .map(t -> t.getName())
+                        .collect(Collectors.toList());
+                for(ServiceProvider p : providers) {
+                    Set<String> intersectRes = p.getqServiceTypes()
+                            .stream()
+                            .filter(filterTypeCodes::contains)
+                            .collect(Collectors.toSet());
+                    //Tengo solo i providers la cui intersezione con i tipi nel filtro non è vuota
+                    if (!intersectRes.isEmpty())
+                        filteredProviders.add(p);
+                }
+                providers = filteredProviders;
+            }
+
+
+            //Filtro per status
+            if(!filter.getStatuses().isEmpty()){
+                List<ServiceProvider> filteredProviders = new ArrayList<>();
+                //Estraggo gli status name
+                List<String> filterStatusCodes = filter
+                        .getStatuses()
+                        .stream()
+                        .map(s -> s.getStatus())
+                        .collect(Collectors.toList());
+
+                for(ServiceProvider p : providers){
+                    //Se il provider ha almeno un servizio con lo status tra quelli presenti nel filtro
+                    //aggiungo il provider alla lista finale
+                    if(p.getServices().stream().anyMatch(s -> filterStatusCodes.contains(s.getCurrentStatus())))
+                        filteredProviders.add(p);
+                }
+                providers = filteredProviders;
+            }
         }
-        return null;
+        return providers;
     }
 
     @Override

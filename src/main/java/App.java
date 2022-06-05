@@ -27,28 +27,34 @@ public class App extends JFrame {
         TypeView typeView = new TypeView();
 
         //Inizializzo l'oggetto HttpTrustedServiceApi che verrà poi passato a tutti i filters tramite i relativi controllers
-        HttpTrustedServiceApi service = new HttpTrustedServiceApi();
-        //Inizializzo i filters passando il servizio
-        CountryFilter countryFilter = null;
+        HttpTrustedServiceApi service = null;
         try {
-            countryFilter = new CountryFilter(service);
+            service = new HttpTrustedServiceApi();
+            //Inizializzo i filters passando il servizio
+            CountryFilter countryFilter = null;
+            try {
+                countryFilter = new CountryFilter(service);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
+            CountryController countryController = new CountryController(countryView, countryFilter);
+
+            filtersPanel = new JPanel();
+            filtersPanel.add(countryView);
+            filtersPanel.add(providerView);
+            filtersPanel.add(statusView);
+            filtersPanel.add(typeView);
+            Container pane = getContentPane();
+            pane.add(filtersPanel, BorderLayout.PAGE_START);
+
+            servicesPanel = new JPanel();
+            servicesPanel.add(new JLabel("Services go here"));
+            pane.add(servicesPanel, BorderLayout.PAGE_END);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
-        CountryController countryController = new CountryController(countryView, countryFilter);
 
-        filtersPanel = new JPanel();
-        filtersPanel.add(countryView);
-        filtersPanel.add(providerView);
-        filtersPanel.add(statusView);
-        filtersPanel.add(typeView);
-        Container pane = getContentPane();
-        pane.add(filtersPanel, BorderLayout.PAGE_START);
-
-        servicesPanel = new JPanel();
-        servicesPanel.add(new JLabel("Services go here"));
-        pane.add(servicesPanel, BorderLayout.PAGE_END);
     }
 
     public static void main(String[] args) {

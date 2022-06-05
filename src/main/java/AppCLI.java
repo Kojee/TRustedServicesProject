@@ -16,11 +16,18 @@ public class AppCLI {
         try {
             System.setOut(new PrintStream(System.out, true, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            System.out.println("SYstem does not support mandatory UTF-8 output, falling back to default");
+            System.out.println("System does not support mandatory UTF-8 output, falling back to default");
         }
-        ITrustedServiceApi serviceApi = new HttpTrustedServiceApi();
+
+        System.out.print("Loading... ");
+        ITrustedServiceApi serviceApi = null;
         try {
-            System.out.print("Loading... ");
+            serviceApi = new HttpTrustedServiceApi();
+        } catch (IOException e) {
+            System.out.println("Could not load data: " + e.getMessage());
+            return;
+        }
+        try {
             countryFilter = new CountryFilter(serviceApi);
             typeFilter = new TypeFilter(serviceApi);
             statusFilter = new StatusFilter(serviceApi);
