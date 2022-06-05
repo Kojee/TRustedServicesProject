@@ -21,11 +21,12 @@ public class ServiceController {
     public ServiceController(ServiceView view, ServiceFilter model){
         this.view = view;
         this.model = model;
-        //Inizializziamo la JTable delle selectable entities
+        //Inizializzo vuota la JTable dei servizi
         JTable ServicesTable = view.getServicesTable();
-        DefaultTableModel ServicesTableModel = (DefaultTableModel)ServicesTable.getModel();
+        //Inizializzo il JButton
         JButton ServicesButton = view.getServicesButton();
         ActionListener actionListener = new ActionListener() {
+            //Al click del pulsante aggiorno i servizi
             public void actionPerformed(ActionEvent event) {
                 updateService();
             }
@@ -35,18 +36,21 @@ public class ServiceController {
     }
 
     private void updateService() {
-        //La selected list ha subito aggiornamenti, recupero il contenuto
+        //La lista dei servizi ha subito aggiornamenti, recupero il contenuto
         List<Service> services = model.getServices();
-        //aggiorno la JTable
+        //Aggiorno la JTable
         JTable table = view.getServicesTable();
         DefaultTableModel tableModel = (DefaultTableModel)table.getModel();
-        //svuoto tutti gli elementi dalla JTable
+        //Svuoto tutti gli elementi dalla JTable
         while (table.getRowCount() > 0) {
             ((DefaultTableModel) table.getModel()).removeRow(0);
         }
-        //inserisco tutti gli elementi aggiornati nella JTable
+        //Inserisco tutti gli elementi aggiornati nella JTable
         for (Service service: services) {
-            tableModel.addRow(new Object[]{service.getServiceName()});
+            //I tipi di servizi possono essere più di uno, rimuovo le quadre agli estremi e li inserisco uno
+            // dopo l'altro separati da una virgola
+            String serviceTypes = service.getqServiceTypes().toString();
+            tableModel.addRow(new Object[]{service.getServiceName(), service.getCountryCode(), serviceTypes.substring(1, serviceTypes.length()-1), service.getCurrentStatus(), service.getTspId()});
         }
     }
 }

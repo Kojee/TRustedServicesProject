@@ -26,8 +26,8 @@ public class App extends JFrame {
         //Inizializzo l'oggetto HttpTrustedServiceApi che verrà poi passato a tutti i filters tramite i relativi controllers
         try {
             HttpTrustedServiceApi service = new HttpTrustedServiceApi();
-            //Inizializzo i filters passando il servizio
 
+            //Inizializzo i filters passando il servizio
             CountryFilter countryFilter = new CountryFilter(service);
             TypeFilter typeFilter = new TypeFilter(service);
             StatusFilter statusFilter = new StatusFilter(service);
