@@ -27,27 +27,24 @@ public class App extends JFrame {
         try {
             HttpTrustedServiceApi service = new HttpTrustedServiceApi();
             //Inizializzo i filters passando il servizio
-            CountryFilter countryFilter = null;
-            TypeFilter typeFilter = null;
-            StatusFilter statusFilter = null;
-            ProviderFilter providerFilter = null;
-            ServiceFilter serviceFilter = null;
-            countryFilter = new CountryFilter(service);
-            typeFilter = new TypeFilter(service);
-            statusFilter = new StatusFilter(service);
-            providerFilter = new ProviderFilter(service);
-            serviceFilter = new ServiceFilter(service, countryFilter, providerFilter, typeFilter, statusFilter);
+
+            CountryFilter countryFilter = new CountryFilter(service);
+            TypeFilter typeFilter = new TypeFilter(service);
+            StatusFilter statusFilter = new StatusFilter(service);
+            ProviderFilter providerFilter = new ProviderFilter(service);
+            ServiceFilter serviceFilter = new ServiceFilter(service, countryFilter, providerFilter, typeFilter, statusFilter);
+
+            //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
+            CountryController countryController = new CountryController(countryView, countryFilter);
+            TypeController typeController = new TypeController(typeView, typeFilter);
+            StatusController statusController = new StatusController(statusView, statusFilter);
+            ProviderController providerController = new ProviderController(providerView, providerFilter);
+            ServiceController serviceController = new ServiceController(serviceView, serviceFilter);
         } catch (IOException e) {
             throw new RuntimeException(e);
             //TODO: mostra alert
             
         }
-        //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
-        CountryController countryController = new CountryController(countryView, countryFilter);
-        TypeController typeController = new TypeController(typeView, typeFilter);
-        StatusController statusController = new StatusController(statusView, statusFilter);
-        ProviderController providerController = new ProviderController(providerView, providerFilter);
-        ServiceController serviceController = new ServiceController(serviceView, serviceFilter);
 
         filtersPanel = new JPanel();
         filtersPanel.add(countryView);
