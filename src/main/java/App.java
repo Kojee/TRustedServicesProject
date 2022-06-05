@@ -24,14 +24,14 @@ public class App extends JFrame {
         ServiceView serviceView = new ServiceView();
 
         //Inizializzo l'oggetto HttpTrustedServiceApi che verrà poi passato a tutti i filters tramite i relativi controllers
-        HttpTrustedServiceApi service = new HttpTrustedServiceApi();
-        //Inizializzo i filters passando il servizio
-        CountryFilter countryFilter = null;
-        TypeFilter typeFilter = null;
-        StatusFilter statusFilter = null;
-        ProviderFilter providerFilter = null;
-        ServiceFilter serviceFilter = null;
         try {
+            HttpTrustedServiceApi service = new HttpTrustedServiceApi();
+            //Inizializzo i filters passando il servizio
+            CountryFilter countryFilter = null;
+            TypeFilter typeFilter = null;
+            StatusFilter statusFilter = null;
+            ProviderFilter providerFilter = null;
+            ServiceFilter serviceFilter = null;
             countryFilter = new CountryFilter(service);
             typeFilter = new TypeFilter(service);
             statusFilter = new StatusFilter(service);
@@ -39,6 +39,8 @@ public class App extends JFrame {
             serviceFilter = new ServiceFilter(service, countryFilter, providerFilter, typeFilter, statusFilter);
         } catch (IOException e) {
             throw new RuntimeException(e);
+            //TODO: mostra alert
+            
         }
         //Inizializzo i controllers passando view e filter (i filter sarebbero i model nel pattern mvc)
         CountryController countryController = new CountryController(countryView, countryFilter);
