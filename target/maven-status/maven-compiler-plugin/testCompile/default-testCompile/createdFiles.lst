@@ -1,6 +1,0 @@
-models\StatusFilterTest.class
-models\CountryFilterTest.class
-models\ServiceTypeTest.class
-models\TypeFilterTest.class
-models\HttpTrustedServiceApiTest.class
-models\ProviderFilterTest.class
