@@ -11,10 +11,10 @@ public class TypeView  extends JPanel {
     public TypeView(){
         //Creo il pannello che conterrà le due tabelle
         subPanel = new JPanel();
-        subPanel.setPreferredSize(new Dimension(200, 400));
+        subPanel.setPreferredSize(new Dimension(200, 420));
         add(subPanel);
         //Creo tabella Tipi selezionabili
-        selectableEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selectable Type"}));
+        selectableEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Tipi selezionabili"}));
         selectableEntitiesTable.setPreferredScrollableViewportSize(new Dimension(180,180));
         selectableEntitiesTable.setFillsViewportHeight(true);
         selectableEntitiesTable.setDefaultEditor(Object.class, null);
@@ -23,7 +23,7 @@ public class TypeView  extends JPanel {
         selectableEntitiesScroll.setVisible(true);
         subPanel.add(selectableEntitiesScroll);
         //Creo tabella Tipi selezionati
-        selectedEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Selected Type"}));
+        selectedEntitiesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{ "Tipi selezionati"}));
         selectedEntitiesTable.setPreferredScrollableViewportSize(new Dimension(180,180));
         selectedEntitiesTable.setFillsViewportHeight(true);
         selectableEntitiesTable.setDefaultEditor(Object.class, null);
