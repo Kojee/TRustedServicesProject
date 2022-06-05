@@ -16,41 +16,39 @@ class HttpTrustedServiceApiTest {
         List<ServiceProvider> allProviders = service.GetServiceProviders(null);
 
 
-        try {
-            List<Country> countries = service.GetCountries(null);
-            int totalSize = countries.size();
-            assertTrue(!countries.isEmpty());
 
-            Filter filter = new Filter();
-            countries = service.GetCountries(filter);
-            assertTrue(countries.size() == totalSize);
+        List<Country> countries = service.GetCountries(null);
+        int totalSize = countries.size();
+        assertTrue(!countries.isEmpty());
 
-            List<ServiceProvider> filterProviders = new ArrayList<>();
-            filterProviders.add(allProviders.stream().filter(p -> p.getName().equals("1&1 De-Mail GmbH")).findFirst().get());
-            filter.setProviders(filterProviders);
+        Filter filter = new Filter();
+        countries = service.GetCountries(filter);
+        assertTrue(countries.size() == totalSize);
 
-            countries = service.GetCountries(filter);
-            assertTrue(countries.size() == 1
-                    && countries.stream().allMatch(c -> c.GetCountryCode().equals("DE")));
+        List<ServiceProvider> filterProviders = new ArrayList<>();
+        filterProviders.add(allProviders.stream().filter(p -> p.getName().equals("1&1 De-Mail GmbH")).findFirst().get());
+        filter.setProviders(filterProviders);
 
-            filter = new Filter();
-            List<ServiceType> filterTypes = new ArrayList<>();
-            filterTypes.add(new ServiceType("QeRDS"));
-            filter.setTypes(filterTypes);
-            countries = service.GetCountries(filter);
-            assertTrue(countries.size() <= totalSize);
-            assertTrue(!countries.isEmpty());
+        countries = service.GetCountries(filter);
+        assertTrue(countries.size() == 1
+                && countries.stream().allMatch(c -> c.GetCountryCode().equals("DE")));
 
-            filter = new Filter();
-            List<ServiceStatus> filterStatus = new ArrayList<>();
-            filterStatus.add(new ServiceStatus("http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn"));
-            filter.setStatuses(filterStatus);
-            countries = service.GetCountries(filter);
-            assertTrue(countries.size() <= totalSize);
-            assertTrue(!countries.isEmpty());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        filter = new Filter();
+        List<ServiceType> filterTypes = new ArrayList<>();
+        filterTypes.add(new ServiceType("QeRDS"));
+        filter.setTypes(filterTypes);
+        countries = service.GetCountries(filter);
+        assertTrue(countries.size() <= totalSize);
+        assertTrue(!countries.isEmpty());
+
+        filter = new Filter();
+        List<ServiceStatus> filterStatus = new ArrayList<>();
+        filterStatus.add(new ServiceStatus("http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn"));
+        filter.setStatuses(filterStatus);
+        countries = service.GetCountries(filter);
+        assertTrue(countries.size() <= totalSize);
+        assertTrue(!countries.isEmpty());
+
     }
 
     @org.junit.jupiter.api.Test

@@ -27,89 +27,86 @@ public class AppCLI {
             System.out.println("Could not load data: " + e.getMessage());
             return;
         }
-        try {
-            countryFilter = new CountryFilter(serviceApi);
-            typeFilter = new TypeFilter(serviceApi);
-            statusFilter = new StatusFilter(serviceApi);
-            providerFilter = new ProviderFilter(serviceApi);
-            serviceFilter = new ServiceFilter(serviceApi,
-                    countryFilter,
-                    providerFilter,
-                    typeFilter,
-                    statusFilter);
+        countryFilter = new CountryFilter(serviceApi);
+        typeFilter = new TypeFilter(serviceApi);
+        statusFilter = new StatusFilter(serviceApi);
+        providerFilter = new ProviderFilter(serviceApi);
+        serviceFilter = new ServiceFilter(serviceApi,
+                countryFilter,
+                providerFilter,
+                typeFilter,
+                statusFilter);
 
-            System.out.println("done");
-            printHelp();
-            Scanner scanner = new Scanner(System.in);
-            Pattern commandPattern = Pattern.compile("^[\\w-]+", Pattern.CASE_INSENSITIVE);
-            while(true){
-                String line = scanner.nextLine();
-                Matcher m = commandPattern.matcher(line);
-                if(m.find()){
-                    String command = m.group();
-                    switch (command){
-                        case "help":
-                            printHelp();
-                            break;
-                        case "list-selectable":
-                            Pattern entityNamePattern = Pattern.compile(" (type|country|provider|status)$", Pattern.CASE_INSENSITIVE);
-                            Matcher entityNameMatcher = entityNamePattern.matcher(line);
-                            if(entityNameMatcher.find()){
-                                printSelectable(entityNameMatcher.group().trim());
-                            }else{
-                                System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
-                            }
-                            break;
-                        case "list-selected":
-                            entityNamePattern = Pattern.compile(" (type|country|provider|status)$", Pattern.CASE_INSENSITIVE);
-                            entityNameMatcher = entityNamePattern.matcher(line);
-                            if(entityNameMatcher.find()){
-                                printSelected(entityNameMatcher.group().trim());
-                            }else{
-                                System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
-                            }
-                            break;
-                        case "add-filter":
-                            String removeCommandLine = line.replace("add-filter ", "");
-                            entityNamePattern = Pattern.compile("^(type|country|provider|status) ", Pattern.CASE_INSENSITIVE);
-                            entityNameMatcher = entityNamePattern.matcher(removeCommandLine);
-                            if(entityNameMatcher.find()){
-                                String filterString = removeCommandLine.replace(entityNameMatcher.group(), "");
-                                filterEntities(entityNameMatcher.group().trim(), filterString, true);
-                            }else{
-                                System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
-                            }
-                            break;
-                        case "remove-filter":
-                            removeCommandLine = line.replace("remove-filter ", "");
-                            entityNamePattern = Pattern.compile("^(type|country|provider|status) ", Pattern.CASE_INSENSITIVE);
-                            entityNameMatcher = entityNamePattern.matcher(removeCommandLine);
-                            if(entityNameMatcher.find()){
-                                String filterString = removeCommandLine.replace(entityNameMatcher.group(), "");
-                                filterEntities(entityNameMatcher.group().trim(), filterString, false);
-                            }else{
-                                System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
-                            }
-                            break;
-                        case "get-services":
-                            removeCommandLine = line.replace("get-services", "").trim();
-                            if(removeCommandLine.isEmpty())
-                                printServices();
-                            else
-                                printServices(removeCommandLine);
-                            break;
-                        default:
-                            System.out.println("Command not found");
-                            break;
-                    }
-
-                }else{
-                    System.out.println("Could not parse command");
+        System.out.println("done");
+        printHelp();
+        Scanner scanner = new Scanner(System.in);
+        Pattern commandPattern = Pattern.compile("^[\\w-]+", Pattern.CASE_INSENSITIVE);
+        while(true){
+            String line = scanner.nextLine();
+            Matcher m = commandPattern.matcher(line);
+            if(m.find()){
+                String command = m.group();
+                switch (command){
+                    case "help":
+                        printHelp();
+                        break;
+                    case "list-selectable":
+                        Pattern entityNamePattern = Pattern.compile(" (type|country|provider|status)$", Pattern.CASE_INSENSITIVE);
+                        Matcher entityNameMatcher = entityNamePattern.matcher(line);
+                        if(entityNameMatcher.find()){
+                            printSelectable(entityNameMatcher.group().trim());
+                        }else{
+                            System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
+                        }
+                        break;
+                    case "list-selected":
+                        entityNamePattern = Pattern.compile(" (type|country|provider|status)$", Pattern.CASE_INSENSITIVE);
+                        entityNameMatcher = entityNamePattern.matcher(line);
+                        if(entityNameMatcher.find()){
+                            printSelected(entityNameMatcher.group().trim());
+                        }else{
+                            System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
+                        }
+                        break;
+                    case "add-filter":
+                        String removeCommandLine = line.replace("add-filter ", "");
+                        entityNamePattern = Pattern.compile("^(type|country|provider|status) ", Pattern.CASE_INSENSITIVE);
+                        entityNameMatcher = entityNamePattern.matcher(removeCommandLine);
+                        if(entityNameMatcher.find()){
+                            String filterString = removeCommandLine.replace(entityNameMatcher.group(), "");
+                            filterEntities(entityNameMatcher.group().trim(), filterString, true);
+                        }else{
+                            System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
+                        }
+                        break;
+                    case "remove-filter":
+                        removeCommandLine = line.replace("remove-filter ", "");
+                        entityNamePattern = Pattern.compile("^(type|country|provider|status) ", Pattern.CASE_INSENSITIVE);
+                        entityNameMatcher = entityNamePattern.matcher(removeCommandLine);
+                        if(entityNameMatcher.find()){
+                            String filterString = removeCommandLine.replace(entityNameMatcher.group(), "");
+                            filterEntities(entityNameMatcher.group().trim(), filterString, false);
+                        }else{
+                            System.out.println("Unsupported entity, entity-name must be one of: type, country, provider, status");
+                        }
+                        break;
+                    case "get-services":
+                        removeCommandLine = line.replace("get-services", "").trim();
+                        if(removeCommandLine.isEmpty())
+                            printServices();
+                        else
+                            printServices(removeCommandLine);
+                        break;
+                    default:
+                        System.out.println("Command not found");
+                        break;
                 }
+
+            }else{
+                System.out.println("Could not parse command");
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
     }
 
     private static void printServices() {

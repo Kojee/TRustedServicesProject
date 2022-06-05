@@ -41,9 +41,11 @@ public class App extends JFrame {
             ProviderController providerController = new ProviderController(providerView, providerFilter);
             ServiceController serviceController = new ServiceController(serviceView, serviceFilter);
         } catch (IOException e) {
-            throw new RuntimeException(e);
             //TODO: mostra alert
-            
+            JOptionPane.showMessageDialog(null,
+                    "Could not load data! Check your internet connection, then close and reopen the application!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
         filtersPanel = new JPanel();

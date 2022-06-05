@@ -39,7 +39,7 @@ public class ServiceFilter extends Observer {
         return serviceApi.GetServices(f);
     }
 
-    public void HandleCountryChange() throws IOException {
+    public void HandleCountryChange() {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
@@ -53,7 +53,7 @@ public class ServiceFilter extends Observer {
         typeFilter.FilterSelectableEntities(f);
     }
 
-    public void HandleStatusChange() throws IOException {
+    public void HandleStatusChange() {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
@@ -67,7 +67,7 @@ public class ServiceFilter extends Observer {
         typeFilter.FilterSelectableEntities(f);
     }
 
-    public void HandleTypeChange() throws IOException {
+    public void HandleTypeChange() {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
@@ -81,7 +81,7 @@ public class ServiceFilter extends Observer {
         countryFilter.FilterSelectableEntities(f);
     }
 
-    public void HandleProviderChange() throws IOException {
+    public void HandleProviderChange() {
         //Andiamo ad aggiornare gli altri filtri
         Filter f = new Filter();
 
@@ -100,32 +100,16 @@ public class ServiceFilter extends Observer {
         //L'evento di update porta con se l'istanza del subject che lo ha emeso
         //Verifichiamo il tipo della sottoclasse che l'ha emesso per capire come gestirlo
         if(s instanceof CountryFilter) {
-            try {
-                HandleCountryChange();
-            } catch (IOException e) {
-                //TODO: notify controller of error
-            }
+            HandleCountryChange();
         }
         if(s instanceof ProviderFilter){
-            try {
-                HandleProviderChange();
-            } catch (IOException e) {
-                //TODO: notify controller of error
-            }
+            HandleProviderChange();
         }
         if(s instanceof StatusFilter){
-            try {
-                HandleStatusChange();
-            } catch (IOException e) {
-                //TODO: notify controller of error
-            }
+            HandleStatusChange();
         }
         if(s instanceof TypeFilter){
-            try {
-                HandleTypeChange();
-            } catch (IOException e) {
-                //TODO: notify controller of error
-            }
+            HandleTypeChange();
         }
     }
 
