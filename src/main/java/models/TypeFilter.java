@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class TypeFilter  extends Subject {
     private ITrustedServiceApi serviceApi;
@@ -51,7 +52,11 @@ public class TypeFilter  extends Subject {
         selectableFilter.setProviders(filter.getProviders());
         selectableFilter.setStatuses(filter.getStatuses());
         List<ServiceType> newSelectableEntities = serviceApi.GetServiceTypes(selectableFilter);
-        selectableEntities = newSelectableEntities;
+        //Rimuoviamo quelli già selezionati
+        selectableEntities = newSelectableEntities
+                .stream()
+                .filter(c -> !selectedEntities.contains(c))
+                .collect(Collectors.toList());
         setSelectable();
     }
 

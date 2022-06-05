@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CountryFilter extends Subject {
     private ITrustedServiceApi serviceApi;
@@ -62,7 +63,11 @@ public class CountryFilter extends Subject {
         selectableFilter.setTypes(filter.getTypes());
         selectableFilter.setStatuses(filter.getStatuses());
         List<Country> newSelectableEntities = serviceApi.GetCountries(selectableFilter);
-        selectableEntities = newSelectableEntities;
+        //Rimuoviamo quelle già selezionate
+        selectableEntities = newSelectableEntities
+                .stream()
+                .filter(c -> !selectedEntities.contains(c))
+                .collect(Collectors.toList());
         setSelectable();
     }
 }
