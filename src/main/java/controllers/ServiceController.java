@@ -40,9 +40,11 @@ public class ServiceController {
         //aggiorno la JTable
         JTable table = view.getServicesTable();
         DefaultTableModel tableModel = (DefaultTableModel)table.getModel();
+        //svuoto tutti gli elementi dalla JTable
         while (table.getRowCount() > 0) {
             ((DefaultTableModel) table.getModel()).removeRow(0);
         }
+        //inserisco tutti gli elementi aggiornati nella JTable
         for (Service service: services) {
             tableModel.addRow(new Object[]{service.getServiceName()});
         }

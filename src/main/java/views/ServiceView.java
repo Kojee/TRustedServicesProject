@@ -10,7 +10,7 @@ public class ServiceView extends JPanel{
     private JButton servicesButton;
     public ServiceView() {
         servicesTable = new JTable(new DefaultTableModel(new Object[][]{}, new Object[]{"Servizi"}));
-        servicesTable.setPreferredScrollableViewportSize(new Dimension(500, 180));
+        servicesTable.setPreferredScrollableViewportSize(new Dimension(700, 280));
         servicesTable.setFillsViewportHeight(true);
         servicesTable.setDefaultEditor(Object.class, null);
         servicesTable.setRowSelectionAllowed(false);

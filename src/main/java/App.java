@@ -11,7 +11,7 @@ public class App extends JFrame {
     private JPanel servicesPanel;
     public App(){
         setTitle("Trusted Services");
-        setSize(1000, 700);
+        setSize(1500, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         FlowLayout layout = new FlowLayout();
