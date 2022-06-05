@@ -1,0 +1,5 @@
+target/classes/
+target/libs/
+target/maven-archiver/
+target/maven-status/
+target/test-classes/
