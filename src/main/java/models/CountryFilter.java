@@ -13,7 +13,7 @@ public class CountryFilter extends Subject {
     private List<Country> selectedEntities;
 
     //TODO: il controller gestisce la IOException e segnala l'errore alla Ui in modo che l'utente lo veda
-    public CountryFilter(ITrustedServiceApi serviceApi) throws IOException {
+    public CountryFilter(ITrustedServiceApi serviceApi) {
         this.serviceApi = serviceApi;
         this.selectableEntities = serviceApi.GetCountries(null);
         this.selectedEntities = new ArrayList<>();
@@ -49,7 +49,7 @@ public class CountryFilter extends Subject {
 
 
     //TODO: il controller gestisce la IOException e segnala l'errore alla Ui in modo che l'utente lo veda
-    public void FilterSelectableEntities(Filter filter) throws IOException {
+    public void FilterSelectableEntities(Filter filter) {
         /*Creo un filtro dove non popolo le countries,
           altrimenti filterei anche per le country attualmente selezionate.
           Questo non va bene perchè così facendo le country selezionabili

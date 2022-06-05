@@ -75,7 +75,7 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
     }
 
     @Override
-    public List<Country> GetCountries(Filter filter) throws IOException {
+    public List<Country> GetCountries(Filter filter) {
         //Ottengo i providers filtrati
         List<ServiceProvider> providers = GetServiceProviders(filter);
             /*Ottengo lista di providers con le seguenti caratteristiche:
@@ -131,7 +131,7 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
     }
 
     @Override
-    public List<ServiceProvider> GetServiceProviders(Filter filter) throws IOException{
+    public List<ServiceProvider> GetServiceProviders(Filter filter) {
         List<ServiceProvider> providers = new ArrayList<>(this.cachedProviders);
 
 
@@ -203,11 +203,10 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
     }
 
     @Override
-    public List<ServiceStatus> GetServiceStatuses(Filter filter){
+    public List<ServiceStatus> GetServiceStatuses(Filter filter) {
         List<ServiceProvider> providers = null;
-        try {
-            //Ottengo i providers filtrati
-            providers = GetServiceProviders(filter);
+        //Ottengo i providers filtrati
+        providers = GetServiceProviders(filter);
             /*Ottengo lista di providers con le seguenti caratteristiche:
                 - Providers presenti tra quelli presenti nel filtro
                 - Providers con nazione contenuta tra quelle presenti nel filtro
@@ -216,62 +215,58 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
               I providers ritornati però contengono tutti i loro servizi, anche quelli che hanno tipo e status non compatibile
               Vanno filtrati ulteriormente. Per fare ciò estraiamo i servizi.
             */
-            List<Service> filteredServices = new ArrayList<>();
-            for(ServiceProvider p : providers)
-                filteredServices.addAll(p.getServices());
+        List<Service> filteredServices = new ArrayList<>();
+        for(ServiceProvider p : providers)
+            filteredServices.addAll(p.getServices());
 
-            //Andiamo ora a filtrare i servizi per type e status
-            if(filter != null){
-                if(!filter.getStatuses().isEmpty()) {
-                    List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
-                    filteredServices = filteredServices
-                            .stream()
-                            .filter(s -> statusNames.contains(s.getCurrentStatus()))
-                            .collect(Collectors.toList());
-                }
-
-                if(!filter.getTypes().isEmpty()){
-                    List<Service> typeFilteredServices = new ArrayList<>();
-                    List<String> filterTypeCodes = filter
-                            .getTypes()
-                            .stream()
-                            .map(t -> t.getName())
-                            .collect(Collectors.toList());
-                    for (Service s : filteredServices) {
-                        //Eseguo l'intersezione tra i tipi del servizio e i tipi contenuti nel filtro
-                        Set<String> intersectRes = s.getqServiceTypes()
-                                .stream()
-                                .filter(filterTypeCodes::contains)
-                                .collect(Collectors.toSet());
-                        //Tengo solo i tipi la cui intersezione non è vuota
-                        if (!intersectRes.isEmpty())
-                            typeFilteredServices.add(s);
-                    }
-                    filteredServices = typeFilteredServices;
-                }
-
+        //Andiamo ora a filtrare i servizi per type e status
+        if(filter != null){
+            if(!filter.getStatuses().isEmpty()) {
+                List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
+                filteredServices = filteredServices
+                        .stream()
+                        .filter(s -> statusNames.contains(s.getCurrentStatus()))
+                        .collect(Collectors.toList());
             }
 
-            //Ora che ho la lista di servizi filtrata, estraggo tutti gli status
-            List<ServiceStatus> statuses = new ArrayList<>();
-            statuses.addAll(filteredServices
-                    .stream()
-                    .map(s -> new ServiceStatus(s.getCurrentStatus()))
-                    .collect( Collectors.toList()));
+            if(!filter.getTypes().isEmpty()){
+                List<Service> typeFilteredServices = new ArrayList<>();
+                List<String> filterTypeCodes = filter
+                        .getTypes()
+                        .stream()
+                        .map(t -> t.getName())
+                        .collect(Collectors.toList());
+                for (Service s : filteredServices) {
+                    //Eseguo l'intersezione tra i tipi del servizio e i tipi contenuti nel filtro
+                    Set<String> intersectRes = s.getqServiceTypes()
+                            .stream()
+                            .filter(filterTypeCodes::contains)
+                            .collect(Collectors.toSet());
+                    //Tengo solo i tipi la cui intersezione non è vuota
+                    if (!intersectRes.isEmpty())
+                        typeFilteredServices.add(s);
+                }
+                filteredServices = typeFilteredServices;
+            }
 
-            //Elimino i duplicati
-            statuses = new ArrayList<>(new HashSet<>(statuses));
-            return statuses;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
+        //Ora che ho la lista di servizi filtrata, estraggo tutti gli status
+        List<ServiceStatus> statuses = new ArrayList<>();
+        statuses.addAll(filteredServices
+                .stream()
+                .map(s -> new ServiceStatus(s.getCurrentStatus()))
+                .collect( Collectors.toList()));
+
+        //Elimino i duplicati
+        statuses = new ArrayList<>(new HashSet<>(statuses));
+        return statuses;
     }
 
     @Override
     public List<ServiceType> GetServiceTypes(Filter filter) {
-        try {
-            //Ottengo i providers filtrati
-            List<ServiceProvider> providers = GetServiceProviders(filter);
+        //Ottengo i providers filtrati
+        List<ServiceProvider> providers = GetServiceProviders(filter);
             /*Ottengo lista di providers con le seguenti caratteristiche:
                 - Providers presenti tra quelli presenti nel filtro
                 - Providers con nazione contenuta tra quelle presenti nel filtro
@@ -280,102 +275,94 @@ public class HttpTrustedServiceApi implements ITrustedServiceApi{
               I providers ritornati però contengono tutti i loro servizi, anche quelli che hanno tipo e status non compatibile
               Vanno filtrati ulteriormente. Per fare ciò estraiamo i servizi.
             */
-            List<Service> filteredServices = new ArrayList<>();
-            for(ServiceProvider p : providers)
-                filteredServices.addAll(p.getServices());
+        List<Service> filteredServices = new ArrayList<>();
+        for(ServiceProvider p : providers)
+            filteredServices.addAll(p.getServices());
 
-            //Andiamo ora a filtrare i servizi per status
-            if(filter != null){
-                if(!filter.getStatuses().isEmpty()) {
-                    List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
-                    filteredServices = filteredServices
-                            .stream()
-                            .filter(s -> statusNames.contains(s.getCurrentStatus()))
-                            .collect(Collectors.toList());
-                }
-            }
-
-
-            //Ora che ho la lista di servizi filtrata per provider, country e status,
-            // estraggo tutti i tipi e elimino i duplicati
-            List<ServiceType> types = new ArrayList<>();
-            for(Service s : filteredServices)
-                types.addAll(s.getqServiceTypes()
+        //Andiamo ora a filtrare i servizi per status
+        if(filter != null){
+            if(!filter.getStatuses().isEmpty()) {
+                List<String> statusNames = filter.getStatuses().stream().map(s -> s.getStatus()).toList();
+                filteredServices = filteredServices
                         .stream()
-                        .map(t -> new ServiceType(t))
-                        .collect(Collectors.toList()));
-
-            //Elimino eventuali duplicati
-            types = new ArrayList<>(new HashSet<>(types));
-
-            //Se nel filtro sono impostati dei tipi, filtro
-            if(filter != null
-                && !filter.getTypes().isEmpty()){
-                types = types
-                        .stream()
-                        .filter(t -> filter.getTypes().contains(t))
+                        .filter(s -> statusNames.contains(s.getCurrentStatus()))
                         .collect(Collectors.toList());
             }
-            return types;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
+
+        //Ora che ho la lista di servizi filtrata per provider, country e status,
+        // estraggo tutti i tipi e elimino i duplicati
+        List<ServiceType> types = new ArrayList<>();
+        for(Service s : filteredServices)
+            types.addAll(s.getqServiceTypes()
+                    .stream()
+                    .map(t -> new ServiceType(t))
+                    .collect(Collectors.toList()));
+
+        //Elimino eventuali duplicati
+        types = new ArrayList<>(new HashSet<>(types));
+
+        //Se nel filtro sono impostati dei tipi, filtro
+        if(filter != null
+                && !filter.getTypes().isEmpty()){
+            types = types
+                    .stream()
+                    .filter(t -> filter.getTypes().contains(t))
+                    .collect(Collectors.toList());
+        }
+        return types;
     }
 
     @Override
     public List<Service> GetServices(Filter filter) {
-        //TODO: test in caso la lista dei providers sia vuota
-        try {
-            //Ottengo i providers filtrati
-            List<ServiceProvider> providers = GetServiceProviders(filter);
+        //Ottengo i providers filtrati
+        List<ServiceProvider> providers = GetServiceProviders(filter);
 
-            //Ottengo tutti i servizi offerti dai providers selezionati
-            List<Service> services = new ArrayList<>();
-            for(ServiceProvider p: providers){
-                services.addAll(p.getServices());
-            }
-
-            if(filter != null){
-                //Non filtro per country e providers perchè i provider ottenuti all'inizio sono già filtrati
-
-                //Filtro per type in quanto i provider ottenuti all'inizio potrebbero contenere servizi di tipo diverso
-                if(!filter.getTypes().isEmpty()) {
-                    List<Service> filteredServices = new ArrayList<>();
-                    List<String> filterTypeCodes = filter
-                            .getTypes()
-                            .stream()
-                            .map(t -> t.getName())
-                            .collect(Collectors.toList());
-                    for (Service s : services) {
-                        //Eseguo l'intersezione tra i tipi del servizio e i tipi contenuti nel filtro
-                        Set<String> intersectRes = s.getqServiceTypes()
-                                .stream()
-                                .filter(filterTypeCodes::contains)
-                                .collect(Collectors.toSet());
-                        //Tengo solo i tipi la cui intersezione non è vuota
-                        if (!intersectRes.isEmpty())
-                            filteredServices.add(s);
-                    }
-                    services = filteredServices;
-                }
-
-                //Filtro per status in quanto i provider ottenuti all'inizio potrebbero contenere servizi di status diverso
-                if(!filter.getStatuses().isEmpty()) {
-                    List<String> filterStatusCodes = filter
-                            .getStatuses()
-                            .stream()
-                            .map(s -> s.getStatus())
-                            .collect(Collectors.toList());
-                    services = services
-                            .stream()
-                            .filter(s -> filterStatusCodes.contains(s.getCurrentStatus()))
-                            .collect(Collectors.toList());
-                }
-            }
-            return services;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        //Ottengo tutti i servizi offerti dai providers selezionati
+        List<Service> services = new ArrayList<>();
+        for(ServiceProvider p: providers){
+            services.addAll(p.getServices());
         }
+
+        if(filter != null){
+            //Non filtro per country e providers perchè i provider ottenuti all'inizio sono già filtrati
+
+            //Filtro per type in quanto i provider ottenuti all'inizio potrebbero contenere servizi di tipo diverso
+            if(!filter.getTypes().isEmpty()) {
+                List<Service> filteredServices = new ArrayList<>();
+                List<String> filterTypeCodes = filter
+                        .getTypes()
+                        .stream()
+                        .map(t -> t.getName())
+                        .collect(Collectors.toList());
+                for (Service s : services) {
+                    //Eseguo l'intersezione tra i tipi del servizio e i tipi contenuti nel filtro
+                    Set<String> intersectRes = s.getqServiceTypes()
+                            .stream()
+                            .filter(filterTypeCodes::contains)
+                            .collect(Collectors.toSet());
+                    //Tengo solo i tipi la cui intersezione non è vuota
+                    if (!intersectRes.isEmpty())
+                        filteredServices.add(s);
+                }
+                services = filteredServices;
+            }
+
+            //Filtro per status in quanto i provider ottenuti all'inizio potrebbero contenere servizi di status diverso
+            if(!filter.getStatuses().isEmpty()) {
+                List<String> filterStatusCodes = filter
+                        .getStatuses()
+                        .stream()
+                        .map(s -> s.getStatus())
+                        .collect(Collectors.toList());
+                services = services
+                        .stream()
+                        .filter(s -> filterStatusCodes.contains(s.getCurrentStatus()))
+                        .collect(Collectors.toList());
+            }
+        }
+        return services;
 
     }
 }

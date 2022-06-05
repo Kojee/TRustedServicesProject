@@ -12,7 +12,7 @@ public class TypeFilter  extends Subject {
     private List<ServiceType> selectableEntities;
     private List<ServiceType> selectedEntities;
 
-    public TypeFilter(ITrustedServiceApi serviceApi) throws IOException {
+    public TypeFilter(ITrustedServiceApi serviceApi) {
         this.serviceApi = serviceApi;
         this.selectableEntities = serviceApi.GetServiceTypes(null);
         this.selectedEntities = new ArrayList<>();
@@ -38,7 +38,7 @@ public class TypeFilter  extends Subject {
         }
     }
 
-    public void FilterSelectableEntities(Filter filter) throws IOException {
+    public void FilterSelectableEntities(Filter filter) {
         /*Creo un filtro dove non popolo i types,
           altrimenti filtrerei anche per i types attualmente selezionati.
           Questo non va bene perchè così facendo i types selezionabili

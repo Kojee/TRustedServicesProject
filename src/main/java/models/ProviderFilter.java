@@ -12,7 +12,7 @@ public class ProviderFilter extends Subject {
     private List<ServiceProvider> selectableEntities;
     private List<ServiceProvider> selectedEntities;
 
-    public ProviderFilter(ITrustedServiceApi serviceApi) throws IOException {
+    public ProviderFilter(ITrustedServiceApi serviceApi) {
         this.serviceApi = serviceApi;
         this.selectableEntities = serviceApi.GetServiceProviders(null);
         this.selectedEntities = new ArrayList<>();
@@ -38,7 +38,7 @@ public class ProviderFilter extends Subject {
         }
     }
 
-    public void FilterSelectableEntities(Filter filter) throws IOException {
+    public void FilterSelectableEntities(Filter filter) {
         /*Creo un filtro dove non popolo i providers,
           altrimenti filtrerei anche per i providers attualmente selezionati.
           Questo non va bene perchè così facendo i providers selezionabili

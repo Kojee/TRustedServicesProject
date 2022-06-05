@@ -13,7 +13,7 @@ public class StatusFilter  extends Subject {
     private List<ServiceStatus> selectableEntities;
     private List<ServiceStatus> selectedEntities;
 
-    public StatusFilter(ITrustedServiceApi serviceApi) throws IOException {
+    public StatusFilter(ITrustedServiceApi serviceApi) {
         this.serviceApi = serviceApi;
         this.selectableEntities = serviceApi.GetServiceStatuses(null);
         this.selectedEntities = new ArrayList<>();
@@ -39,7 +39,7 @@ public class StatusFilter  extends Subject {
         }
     }
 
-    public void FilterSelectableEntities(Filter filter) throws IOException {
+    public void FilterSelectableEntities(Filter filter) {
         /*Creo un filtro dove non popolo gli status,
           altrimenti filtrerei anche per gli status attualmente selezionati.
           Questo non va bene perchè così facendo gli status selezionabili
