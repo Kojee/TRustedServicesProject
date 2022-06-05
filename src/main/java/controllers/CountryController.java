@@ -31,21 +31,21 @@ public class CountryController extends Observer {
         model.attach(this);
         //inizializzo vuota la JTable delle selectedEntities
         JTable SelectedEntitiesTable = view.getSelectedEntitiesTable();
-        //TODO: aggiungere sottoscrizione eventi di selezione delle righe delle JTable in CountryView
-        //      la gestione di tali eventi richiamerà i metodi Select e Deselect nel model
         SelectableEntitiesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
+                //if per verificare che il click sia avvenuto e non eseguire l'evento due volte
                 if(!event.getValueIsAdjusting() && SelectableEntitiesTable.getSelectedRow() != -1) {
+                    //seleziono la cella che è stata cliccata
                     model.SelectEntity(SelectableEntitiesTable.getValueAt(SelectableEntitiesTable.getSelectedRow(), 0).toString());
-                    System.out.println(SelectableEntitiesTable.getValueAt(SelectableEntitiesTable.getSelectedRow(), 0).toString());
                 }
             }
         });
         SelectedEntitiesTable.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
             public void valueChanged(ListSelectionEvent event) {
+                //if per verificare che il click sia avvenuto e non eseguire l'evento due volte
                 if(!event.getValueIsAdjusting() && SelectedEntitiesTable.getSelectedRow() != -1) {
+                    //deseleziono la cella che è stata cliccata
                     model.DeselectEntity(SelectedEntitiesTable.getValueAt(SelectedEntitiesTable.getSelectedRow(), 0).toString());
-                    System.out.println(SelectedEntitiesTable.getValueAt(SelectedEntitiesTable.getSelectedRow(), 0).toString());
                 }
             }
         });
@@ -58,9 +58,11 @@ public class CountryController extends Observer {
         //aggiorno la JTable
         JTable table = view.getSelectedEntitiesTable();
         DefaultTableModel tableModel = (DefaultTableModel)table.getModel();
+        //svuoto tutti gli elementi dalla JTable
         while (table.getRowCount() > 0) {
             ((DefaultTableModel) table.getModel()).removeRow(0);
         }
+        //inserisco tutti gli elementi aggiornati nella JTable
         for (Country country: countries) {
             tableModel.addRow(new Object[]{country.GetCountryName()});
         }
@@ -73,11 +75,12 @@ public class CountryController extends Observer {
         //aggiorno la JTable
         JTable table = view.getSelectableEntitiesTable();
         DefaultTableModel tableModel = (DefaultTableModel)table.getModel();
+        //svuoto tutti gli elementi dalla JTable
         while (table.getRowCount() > 0) {
             ((DefaultTableModel) table.getModel()).removeRow(0);
         }
+        //inserisco tutti gli elementi aggiornati nella JTable
         for (Country country: countries) {
-            //System.out.println(country.GetCountryName());
             tableModel.addRow(new Object[]{country.GetCountryName()});
         }
     }
