@@ -1,4 +1,4 @@
-package models;
+import models.*;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -1,5 +1,4 @@
-package models;
-
+import models.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

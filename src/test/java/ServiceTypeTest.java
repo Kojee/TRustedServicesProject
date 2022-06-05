@@ -1,5 +1,4 @@
-package models;
-
+import models.ServiceType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
